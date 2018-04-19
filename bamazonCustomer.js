@@ -1,5 +1,5 @@
 const mysql = require('mysql');
-const faker = require('faker');
+//const faker = require('faker');
 const inquirer = require('inquirer');
 const Table = require('cli-table');
 const chalk = require('chalk');

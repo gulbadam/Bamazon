@@ -8,7 +8,7 @@ CREATE TABLE products(
     price DECIMAL(10,2) NOT NULL,
     stock_quantity INT(10) NOT NULL,
     product_sales DECIMAL(10,2) DEFAULT 0
-)
+);
 CREATE TABLE departments
 (
     department_id INT
@@ -16,6 +16,6 @@ CREATE TABLE departments
     department_name VARCHAR
     (50) NOT NULL,
     over_head_costs DECIMAL
-    (10,2) NOT NULL,
+    (10,2) NOT NULL
 
-)
+);
