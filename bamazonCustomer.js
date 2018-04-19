@@ -5,37 +5,7 @@ const Table = require('cli-table');
 const chalk = require('chalk');
 let totalQuantity = 10;
 let totalPrice = 0;
-const seedsTable = () => {
-    const data = [];
-    const depData = [];
-    const uniqDep = [];
-    const dataDep = [];
 
-    for (let i = 0; i < 100; i++) {
-        depData.push(faker.commerce.department())
-    }
-    let uniq = depData.filter((elem, index, self) => { return index === self.indexOf(elem) });
-    for (var i = 0; i < 10; i++) {
-        data.push([
-            faker.commerce.productName(),
-            faker.commerce.department(),
-            faker.finance.amount(1, 100, 2),
-            faker.random.number({ min: 1, max: 10 }),
-        ]);
-    }
-    for (let i = 0; i < uniq.length; i++) {
-        dataDep.push([uniq[i], faker.random.number({ min: 10000, max: 50000 })])
-    }
-    const q =
-        'INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES ?';
-    const qd = 'INSERT INTO departments(department_name, over_head_costs) VALUE ?';
-    connection.query(q, [data], (err, res) => {
-        console.log(err);
-        connection.query(qd, [dataDep], (err, res) => {
-            console.log(err);
-        })
-    });
-};
 
 const showTable = () => {
     const table = new Table({
@@ -52,11 +22,14 @@ const showTable = () => {
                 element.stock_quantity
             ]);
         });
-        console.log(chalk.blue(table.toString()));
+        console.log(table.toString());
 
         askCustomer();
 
+
+
     });
+
 };
 const lastID = () => {
     connection.query('SELECT MAX(item_id) AS item_id FROM products', (err, res) => {
@@ -83,7 +56,7 @@ const askCustomer = () => {
         }]).then(answer => {
             let prodId = answer.prodId;
             if (answer.prodId.toUpperCase() == "Q") {
-                process.exit();
+                end();
 
             } else if (prodId > totalQuantity) {
                 console.log(chalk.green.bgRed.bold("Wrong item ID!!!"));
@@ -131,22 +104,13 @@ const withdrawProd = (prodId, prodQty) => {
             }
 
         }
-        totalPrice = parseFloat(prodQty * JSON.stringify(prod.price)).toFixed(2);
-
-        console.log(chalk.white("\n================================================" + "\n"));
-
-        console.log(chalk.cyan("Product Name:  " + JSON.stringify(prod.product_name)));
-        console.log(chalk.cyan("Price:         " + "$" + JSON.stringify(prod.price)));
-        console.log(chalk.cyan("Quantity:      " + prodQty));
-        console.log(chalk.white("_____________________________"));
-        console.log(chalk.cyan("Your total is: " + "$" + totalPrice));
-        console.log(chalk.white("\n================================================" + "\n"));
 
 
 
 
         if (prod.stock_quantity >= prodQty) {
-            orderComplete(prod, prodId, prodQty, totalPrice);
+            totalPrice = parseFloat(prodQty * JSON.stringify(prod.price)).toFixed(2);
+            orderComplete(prod, prodId, prodQty, totalPrice, prod);
             //connection.end();
 
         } else {
@@ -156,10 +120,23 @@ const withdrawProd = (prodId, prodQty) => {
 
     })
 };
-const orderComplete = (prodObj, prodId, prodQty, totalPrice) => {
+const orderComplete = (prodObj, prodId, prodQty, totalPrice, prod) => {
     let = newQuantity = prodObj.stock_quantity - prodQty;
     let query = "UPDATE products SET stock_quantity = ?, product_sales = product_sales + ? where ?";
-    connection.query(query, [newQuantity, totalPrice, { item_id: prodId }], (err, res) => {})
+    connection.query(query, [newQuantity, totalPrice, { item_id: prodId }], (err, res) => {
+
+    })
+
+
+    console.log(chalk.white("\n================================================" + "\n"));
+
+    console.log(chalk.cyan("Product Name:  " + JSON.stringify(prod.product_name)));
+    console.log(chalk.cyan("Price:         " + "$" + JSON.stringify(prod.price)));
+    console.log(chalk.cyan("Quantity:      " + prodQty));
+    console.log(chalk.white("_____________________________"));
+    console.log(chalk.cyan("Your total is: " + "$" + totalPrice));
+    console.log(chalk.white("\n================================================" + "\n"));
+
 
 
 
@@ -181,7 +158,8 @@ const connection = mysql.createConnection({
 });
 
 
-seedsTable();
-lastID();
+
+
 showTable();
-module.exports.seedsTable = seedsTable;
+lastID();
+//module.exports.seedsTable = seedsTable;
