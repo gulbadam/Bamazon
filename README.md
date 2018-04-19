@@ -1,9 +1,11 @@
 # Bamazon
 A comand line shoping programm.
 
+<strong>seeds.js</strong> generates fake seeds data with Faker package.
+
 <strong>Customer View</strong>
 
-<strong>bamazonCustomer.js</strong> generates fake seeds data with Faker package.
+<strong>bamazonCustomer.js</strong> 
 This application displays all of the items available for sale.
 Include the ids, names, and prices of products for sale.
 The app prompts users with two messages.
